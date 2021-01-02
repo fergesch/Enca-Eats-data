@@ -1,0 +1,11 @@
+name: .venv
+dependencies:
+  - jupyter
+  - pandas
+  - numpy
+  - requests
+  - treelib
+  - geopandas
+  - pip:
+    - yelpapi
+    - azure-cosmos
