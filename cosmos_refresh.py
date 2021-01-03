@@ -76,13 +76,23 @@ while len(cat_copy) > 0:
     for i in pop_list:
         cat_copy.pop(i)
 
-# # Convert tree to json and upload to cosmos
-# # Need to figure out right structure
-# cat_dict = json.loads(re.sub(',*\s*"data": null', '',tree.to_json(with_data=True)))
-# database.delete_container('category_hierarchy')
-# database.create_container(id='category_hierarchy', partition_key=PartitionKey(path='/root', kind='Hash'))
-# container_cat_hier.upsert_item(cat_dict)
-# tree.save2file('tree.txt')
+hier_list = []
+for a in ['food', 'restaurants']:
+    for i in tree.children(a):
+        tmp_dict = {'alias': i.identifier,
+                    'title': i.tag,
+                    'children': []}
+        for j in tree.expand_tree(i.identifier):
+            child = tree.get_node(j)
+            child_dict = {'alias': child.identifier,
+                          'title': child.tag}
+            tmp_dict['children'].append(child_dict)
+        hier_list.append(tmp_dict)
+
+database.delete_container('category_hierarchy')
+database.create_container(id='category_hierarchy', partition_key=PartitionKey(path='/alias', kind='Hash'))
+for i in hier_list:
+    container_cat_hier.upsert_item(i)
 
 
 # Start pulling businesses within food and restaurants
