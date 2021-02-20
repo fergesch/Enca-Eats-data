@@ -82,6 +82,7 @@ for bus in dedupe_list:
         bus['neighborhood'] = utils.find_neighborhood(Point(bus['coordinates']['longitude'], bus['coordinates']['latitude']))
     else:
         bus['neighborhood'] = 'Unknown'
+    bus['url'] = bus['url'].split('?')[0]
     container_rest.upsert_item(bus)
 print('Load time:', datetime.datetime.now()- t_dedupe)
 print('Total time:', datetime.datetime.now() - t_0)
